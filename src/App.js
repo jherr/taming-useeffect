@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import "./App.css";
+
+import { useFetch } from "./useFetch";
+
+const useStopwatch = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("useStopwatch useEffect");
+    const interval = setInterval(() => {
+      console.log(`Count = ${count}`);
+      setCount((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return count;
+};
 
 function App() {
+  const [url, setUrl] = useState(null);
+  const count = useStopwatch();
+  const { data } = useFetch({ url, onSuccess: () => console.log("success") });
+
+  console.log("App rendering");
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>Hello</div>
+      <div>Count: {count}</div>
+      <div>{JSON.stringify(data)}</div>
+      <div>
+        <button onClick={() => setUrl("/jack.json")}>Jack</button>
+        <button onClick={() => setUrl("/sally.json")}>Sally</button>
+      </div>
     </div>
   );
 }
